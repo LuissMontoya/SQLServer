@@ -3,9 +3,13 @@ use tienda
 --select * from categorias
 --select * from productos
 --select * from clientes
+--select * from clientes
+--select * from compras_productos
 
 
 /* Traer las categorias 1 del producto 3 y estado activo*/
+
+
 declare 
 	@w_id_categoria int,
 	@w_id_productos  int,
