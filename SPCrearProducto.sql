@@ -1,7 +1,6 @@
 use tienda
 go
 
-
 if exists(select 1 from sysobjects where name = 'SPcrearProducto' and type = 'P')
    drop proc SPcrearProducto
 go
@@ -20,11 +19,10 @@ declare
 	@w_descuento         int,
 	@w_cantidad_stock    int
 
+-- Validar si existe el producto --
 if not exists (select 1 from productos where id_producto = @i_id_producto)
 begin
-
 	-- validar si existe la categoria --
-
 	if exists(select 1 from categorias where id_categoria = @i_id_categoria)
 	begin
 		print 'Existe la categoria'
@@ -43,8 +41,7 @@ begin
 	else
 	begin
 		print 'No Existe la categoria'
-	end
-	
+	end	
 end
 else
 begin
@@ -53,9 +50,12 @@ begin
 	from productos 
 	where id_producto = @i_id_producto
 
+	-- crear la nueva cantidad en stock del producto --
+	select @w_cantidad_stock = @w_cantidad_stock + @i_cantidad_stock
+
 	--agregar la cantidad en stock del producto --
 	update productos
-	set cantidad_stock = @w_cantidad_stock + @i_cantidad_stock
+	set cantidad_stock = @w_cantidad_stock
 	where id_producto =  @i_id_producto
 
 	-- actualizar el precio de venta del producto --
@@ -63,17 +63,17 @@ begin
 	set precio_venta = @i_precio_venta
 	where id_producto =  @i_id_producto
 	
-	-- validar si hay más de 200 unidades para aplicar el 50% de descuento --
+	-- validar si hay mÃ¡s de 200 unidades para aplicar el 50% de descuento --
 	if @w_cantidad_stock >200 
 	begin
 		update productos
 		set descuentos = 50
 		where id_producto =  @i_id_producto
 	end
-
 end
 
 
-exec SPcrearProducto 9,'FABULOSO COLOR rosa','8001533058549',20.500,100,1,1
+exec SPcrearProducto 7,'fabuloso color rosa','8001533058549',22.500,1,1,1
 
 select * from productos
+where id_producto = 7
